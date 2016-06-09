@@ -1,0 +1,107 @@
+﻿<Window x:Class="GitSimpleRewriteHistory.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GitSimpleRewriteHistory"
+        mc:Ignorable="d"
+        Background="{x:Static SystemColors.ControlBrush}"
+        TextOptions.TextFormattingMode="Display"
+        Title="Git Simple Rewrite History" Height="590" Width="1200">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Style.Setters>
+                <Setter Property="Margin" Value="10,10,0,0"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="Label">
+            <Style.Setters>
+                <Setter Property="Margin" Value="10,10,0,0"/>
+                <Setter Property="Padding" Value="0"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Style.Setters>
+                <Setter Property="Margin" Value="10,10,0,0"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="Button">
+            <Style.Setters>
+                <Setter Property="Margin" Value="10,10,0,0"/>
+                <Setter Property="Padding" Value="10,0"/>
+            </Style.Setters>
+        </Style>
+        <local:DateTimeOffsetConverter x:Key="DateTimeOffsetConverter"></local:DateTimeOffsetConverter>
+    </Window.Resources>
+
+    <Grid>
+        <DockPanel Margin="0,0,10,10">
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,15">
+                <Label VerticalAlignment="Center">Repo path:</Label>
+                <Button DockPanel.Dock="Right" TabIndex="2" Click="Apply_Click">_Apply changes</Button>
+                <Border DockPanel.Dock="Right" Width="60"></Border>
+                <Button DockPanel.Dock="Right" TabIndex="1" Click="Reload_Click">_Reload</Button>
+                <Button DockPanel.Dock="Right" TabIndex="0" Click="Browse_Click">_Browse...</Button>
+                <TextBox IsReadOnly="True" Background="{x:Static SystemColors.ControlBrush}" IsTabStop="False" Text="{Binding RepoPath}"/>
+            </DockPanel>
+            <ListBox HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     BorderBrush="{x:Null}" Background="{x:Null}" ItemsSource="{Binding Commits}"
+                     KeyboardNavigation.TabNavigation="Continue">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Focusable" Value="False"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.Style>
+                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                        <Style.Triggers>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Margin="0,15">Git repository at this path is empty or does not exist.</TextBlock>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch" Margin="0,0,0,10" Background="{Binding ListItemBackground}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="5*"/>
+                            </Grid.ColumnDefinitions>
+                            <DockPanel Grid.Column="0">
+                                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                                    <TextBox DockPanel.Dock="Left" IsReadOnly="True" Text="{Binding Hash}" Background="{x:Static SystemColors.ControlBrush}" local:SelectTextOnFocus.Active="True" />
+                                    <Button DockPanel.Dock="Right" Visibility="{Binding UndoVisibility}" Click="UndoChanges_Click">Undo changes</Button>
+                                </DockPanel>
+                                <TextBox TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Message}" Margin="10,10,0,10" />
+                            </DockPanel>
+                            <StackPanel Grid.Column="1">
+                                <Label>Author / date</Label>
+                                <TextBox Text="{Binding AuthorName}"/>
+                                <TextBox Text="{Binding AuthorEmail}"/>
+                                <TextBox Text="{Binding AuthorDate, Converter={StaticResource DateTimeOffsetConverter}}" Margin="10,10,0,10"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label>Committer / commit date</Label>
+                                    <CheckBox IsChecked="{Binding CommitterEqualsAuthor}">= Author</CheckBox>
+                                </StackPanel>
+                                <TextBox Text="{Binding CommitterName}" IsEnabled="{Binding CommitterNotEqualsAuthor}"/>
+                                <TextBox Text="{Binding CommitterEmail}" IsEnabled="{Binding CommitterNotEqualsAuthor}"/>
+                                <TextBox Text="{Binding CommitterDate, Converter={StaticResource DateTimeOffsetConverter}}" IsEnabled="{Binding CommitterNotEqualsAuthor}" Margin="10,10,0,10"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </Grid>
+</Window>
