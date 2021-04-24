@@ -1,0 +1,8 @@
+<Project>
+ <PropertyGroup>
+    <MSBuildProjectExtensionsPath>$(MSBuildThisFileDirectory)\Builds\obj\$(MSBuildProjectName)</MSBuildProjectExtensionsPath>
+    <BaseIntermediateOutputPath>$(MSBuildProjectExtensionsPath)</BaseIntermediateOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+ </PropertyGroup>
+</Project>
