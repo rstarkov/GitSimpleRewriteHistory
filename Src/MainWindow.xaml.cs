@@ -9,9 +9,8 @@ using System.Windows.Media;
 using LibGit2Sharp;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PropertyChanged;
-using RT.Util.Dialogs;
+using RT.Util.Forms;
 
-// support editing commit date
 // window size/position settings
 // export/import xml
 // "Undo all", "all committer equal"
@@ -73,7 +72,7 @@ namespace GitSimpleRewriteHistory
         }
     }
 
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     class MainModel
     {
         public string RepoPath { get; set; } = "";
@@ -193,7 +192,7 @@ namespace GitSimpleRewriteHistory
         }
     }
 
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     class CommitModel
     {
         private Commit _commit;
