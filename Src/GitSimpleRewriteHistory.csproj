@@ -14,7 +14,9 @@
     </PackageReference>
     <PackageReference Include="LibGit2Sharp" Version="0.30.0" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="RT.Util" Version="2.0.1776" />
     <PackageReference Include="RT.Util.Core" Version="2.0.1776" />
   </ItemGroup>

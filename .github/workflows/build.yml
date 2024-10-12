@@ -41,8 +41,8 @@ jobs:
       - name: Cleanup
         shell: pwsh
         run: |
-          Remove-Item -Path .\Publish\linux-* -Recurse -Force
-          Remove-Item -Path .\Publish\osx-* -Recurse -Force
+          Remove-Item -Path ./Publish/runtimes/linux-* -Recurse -Force
+          Remove-Item -Path ./Publish/runtimes/osx-* -Recurse -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
