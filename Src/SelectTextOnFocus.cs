@@ -3,81 +3,79 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace GitSimpleRewriteHistory
+namespace GitSimpleRewriteHistory;
+
+public class SelectTextOnFocus : DependencyObject
 {
-    public class SelectTextOnFocus : DependencyObject
+    public static readonly DependencyProperty ActiveProperty = DependencyProperty.RegisterAttached(
+        "Active",
+        typeof(bool),
+        typeof(SelectTextOnFocus),
+        new PropertyMetadata(false, ActivePropertyChanged));
+
+    private static void ActivePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        public static readonly DependencyProperty ActiveProperty = DependencyProperty.RegisterAttached(
-            "Active",
-            typeof(bool),
-            typeof(SelectTextOnFocus),
-            new PropertyMetadata(false, ActivePropertyChanged));
-
-        private static void ActivePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        if (d is TextBox)
         {
-            if (d is TextBox)
+            TextBox textBox = d as TextBox;
+            if ((e.NewValue as bool?).GetValueOrDefault(false))
             {
-                TextBox textBox = d as TextBox;
-                if ((e.NewValue as bool?).GetValueOrDefault(false))
-                {
-                    textBox.GotKeyboardFocus += OnKeyboardFocusSelectText;
-                    textBox.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
-                }
-                else
-                {
-                    textBox.GotKeyboardFocus -= OnKeyboardFocusSelectText;
-                    textBox.PreviewMouseLeftButtonDown -= OnMouseLeftButtonDown;
-                }
+                textBox.GotKeyboardFocus += OnKeyboardFocusSelectText;
+                textBox.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
+            }
+            else
+            {
+                textBox.GotKeyboardFocus -= OnKeyboardFocusSelectText;
+                textBox.PreviewMouseLeftButtonDown -= OnMouseLeftButtonDown;
             }
         }
+    }
 
-        private static void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private static void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        DependencyObject dependencyObject = GetParentFromVisualTree(e.OriginalSource);
+
+        if (dependencyObject == null)
         {
-            DependencyObject dependencyObject = GetParentFromVisualTree(e.OriginalSource);
-
-            if (dependencyObject == null)
-            {
-                return;
-            }
-
-            var textBox = (TextBox) dependencyObject;
-            if (!textBox.IsKeyboardFocusWithin)
-            {
-                textBox.Focus();
-                e.Handled = true;
-            }
+            return;
         }
 
-        private static DependencyObject GetParentFromVisualTree(object source)
+        var textBox = (TextBox)dependencyObject;
+        if (!textBox.IsKeyboardFocusWithin)
         {
-            DependencyObject parent = source as UIElement;
-            while (parent != null && !(parent is TextBox))
-            {
-                parent = VisualTreeHelper.GetParent(parent);
-            }
+            textBox.Focus();
+            e.Handled = true;
+        }
+    }
 
-            return parent;
+    private static DependencyObject GetParentFromVisualTree(object source)
+    {
+        DependencyObject parent = source as UIElement;
+        while (parent != null && !(parent is TextBox))
+        {
+            parent = VisualTreeHelper.GetParent(parent);
         }
 
-        private static void OnKeyboardFocusSelectText(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            TextBox textBox = e.OriginalSource as TextBox;
-            if (textBox != null)
-            {
-                textBox.SelectAll();
-            }
-        }
+        return parent;
+    }
 
-        [AttachedPropertyBrowsableForChildrenAttribute(IncludeDescendants = false)]
-        [AttachedPropertyBrowsableForType(typeof(TextBox))]
-        public static bool GetActive(DependencyObject @object)
+    private static void OnKeyboardFocusSelectText(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (e.OriginalSource is TextBox textBox)
         {
-            return (bool) @object.GetValue(ActiveProperty);
+            textBox.SelectAll();
         }
+    }
 
-        public static void SetActive(DependencyObject @object, bool value)
-        {
-            @object.SetValue(ActiveProperty, value);
-        }
+    [AttachedPropertyBrowsableForChildren(IncludeDescendants = false)]
+    [AttachedPropertyBrowsableForType(typeof(TextBox))]
+    public static bool GetActive(DependencyObject @object)
+    {
+        return (bool)@object.GetValue(ActiveProperty);
+    }
+
+    public static void SetActive(DependencyObject @object, bool value)
+    {
+        @object.SetValue(ActiveProperty, value);
     }
 }
