@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Background="{x:Static SystemColors.ControlBrush}"
         TextOptions.TextFormattingMode="Display"
-        Title="Git Simple Rewrite History" Height="590" Width="1200">
+        Title="Git Simple Rewrite History - v[dev]" Height="590" Width="1200">
 
     <Window.Resources>
         <Style TargetType="TextBox">

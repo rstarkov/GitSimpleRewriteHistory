@@ -1,0 +1,46 @@
+name: build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare version
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const script = require(require('path').resolve('./.github/workflows/version.js'))
+            const vs = script({ context, github, firstRev: '9b3f37ae' });
+            const verStr = vs.formatVersion(`1.$(GitRevCount)-$(GitBranch) [$(GitSha6)/$(yyyy)-$(mm)-$(dd)]`).replace('-main', '');
+            const verStrUi = vs.formatVersion(`1.$(GitRevCount)-$(GitBranch) ($(yyyy)-$(mm)-$(dd))`).replace('-main', '');
+            const verNum = vs.formatVersion(`1.$(GitRevCount)`);
+            core.exportVariable('VER_STR', verStr);
+            core.exportVariable('VER_NUM', verNum);
+            vs.updateText('Src/MainWindow.xaml', '- v[dev]', `- v${verStrUi}`);
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: dotnet restore
+        run: dotnet restore
+
+      - name: "dotnet publish: ${{ env.VER_STR }}"
+        run: dotnet publish Src\GitSimpleRewriteHistory.csproj --configuration Release -p:InformationalVersion="${{env.VER_STR}}" -p:Version=${{env.VER_NUM}} -p:FileVersion=${{env.VER_NUM}} -p:AssemblyVersion=${{env.VER_NUM}} -o Publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GitSimpleRewriteHistory-v${{env.VER_NUM}}
+          path: Publish
+          if-no-files-found: error
