@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>net8.0-windows</TargetFrameworks>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <OutputPath>..\Builds\$(Configuration)-$(TargetFramework)$(RuntimeIdentifier)\</OutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)-$(TargetFramework)$(RuntimeIdentifier)\</IntermediateOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,8 +14,8 @@
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.3.3" />
-    <PackageReference Include="RT.Util" Version="2.0.1688" />
-    <PackageReference Include="RT.Util.Core" Version="2.0.1688" />
+    <PackageReference Include="RT.Util" Version="2.0.1776" />
+    <PackageReference Include="RT.Util.Core" Version="2.0.1776" />
   </ItemGroup>
 
 </Project>

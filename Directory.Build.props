@@ -1,8 +1,19 @@
 <Project>
- <PropertyGroup>
-    <MSBuildProjectExtensionsPath>$(MSBuildThisFileDirectory)\Builds\obj\$(MSBuildProjectName)</MSBuildProjectExtensionsPath>
-    <BaseIntermediateOutputPath>$(MSBuildProjectExtensionsPath)</BaseIntermediateOutputPath>
+  <PropertyGroup>
+    <!-- All normal build outputs are dumped into a single output directory. There is no per-project split.
+         This won't work for every project but it works for this one. -->
+    <!-- Intermediate files are placed into per-project subdirectories -->
+
+    <BaseOutputPath>$(MSBuildThisFileDirectory)Builds\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(BaseOutputPath)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+
+    <CustomSuffix>-$(TargetFramework)$(RuntimeIdentifier)</CustomSuffix>
+    <CustomSuffix Condition="'$(CustomSuffix)'=='-'"></CustomSuffix>
+    <OutputPath>$(BaseOutputPath)$(Configuration)$(CustomSuffix)\</OutputPath>
+    <PublishDir>$(BaseOutputPath)$(Configuration)$(CustomSuffix)-publish\</PublishDir>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)$(CustomSuffix)\</IntermediateOutputPath>
+
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
- </PropertyGroup>
+  </PropertyGroup>
 </Project>
