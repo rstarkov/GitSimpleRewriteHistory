@@ -38,6 +38,12 @@ jobs:
       - name: "dotnet publish: ${{ env.VER_STR }}"
         run: dotnet publish Src\GitSimpleRewriteHistory.csproj --configuration Release -p:InformationalVersion="${{env.VER_STR}}" -p:Version=${{env.VER_NUM}} -p:FileVersion=${{env.VER_NUM}} -p:AssemblyVersion=${{env.VER_NUM}} -o Publish
 
+      - name: Cleanup
+        shell: pwsh
+        run: |
+          Remove-Item -Path .\Publish\linux-* -Recurse -Force
+          Remove-Item -Path .\Publish\osx-* -Recurse -Force
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
