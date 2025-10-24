@@ -183,7 +183,7 @@ class MainModel
                     Message = ours.Message
                 };
             }
-        }, repo.Commits);
+        }, repo.Commits.Where(c => knownCommits[c.Id.Sha].Modified).ToList());
         InitialLoadRepo(RepoPath);
         DlgMessage.ShowInfo("Changes applied successfully.");
     }
